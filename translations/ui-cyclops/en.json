@@ -5,6 +5,7 @@
   "tab.list": "List {name}",
   "devInfo": "Developer information",
   "no-value": "No value selected",
+  "at-least": "at least {minValue}",
   "project.header": "Project {project} ({count} {count, plural, one {list} other {lists}})",
   "project.lists": "Lists in this project",
   "project.field.title": "Project title",

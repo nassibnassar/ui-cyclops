@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
@@ -165,12 +165,14 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
 }
 
 
-export default function ListView({ loaded, name, spectres, query, updateQuery, addFrom, addSpectre, children }) {
+export default function ListView({ loaded, name, spectres, spectreCount, query, updateQuery, addFrom, addSpectre, children }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
+  const intl = useIntl();
   const callout = useCallout();
 
   const nav = useNav();
   nav.update({ list: { name, location: useLocation() } });
+  const count = spectreCount || intl.formatMessage({ id: 'ui-cyclops.at-least' }, { minValue: spectres?.data.length });
 
   return (
     <Paneset static>
@@ -187,8 +189,8 @@ export default function ListView({ loaded, name, spectres, query, updateQuery, a
         defaultWidth="fill"
         paneTitle={
           addFrom ?
-            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count: spectres?.data.length, name, addFrom }} /> :
-            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count: spectres?.data.length, name }} />
+            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name, addFrom }} /> :
+            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name }} />
         }
         firstMenu={
           showSearchPane ? undefined : (

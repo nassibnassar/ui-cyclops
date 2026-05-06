@@ -13,6 +13,7 @@ function ListRoute({ resources, mutator, location, match, children }) {
       loaded={loaded}
       name={match.params.setId}
       spectres={spectresResource.records[0]}
+      spectreCount={resources.spectreCount.records[0]?.data[0].values[0]}
       query={resources.query}
       updateQuery={mutator.query.update}
       addFrom={addFrom}
@@ -21,6 +22,24 @@ function ListRoute({ resources, mutator, location, match, children }) {
       {children}
     </ListView>
   );
+}
+
+// Used as a query-parameter function in two manifest entries
+function condFn(_a, _b, resources) {
+  const clauses = [];
+
+  const query = resources.query.query;
+  const qindex = resources.query.qindex;
+  if (query && qindex) {
+    clauses.push(`${qindex} = '${query}'`);
+  }
+
+  const availability = resources.query.availability;
+  if (availability) {
+    clauses.push(`availability = '${availability}'`);
+  }
+
+  return clauses.join(' and ');
 }
 
 ListRoute.manifest = Object.freeze({
@@ -33,22 +52,7 @@ ListRoute.manifest = Object.freeze({
     },
     params: {
       fields: '*',
-      cond: (_a, _b, resources) => {
-        const clauses = [];
-
-        const query = resources.query.query;
-        const qindex = resources.query.qindex;
-        if (query && qindex) {
-          clauses.push(`${qindex} = '${query}'`);
-        }
-
-        const availability = resources.query.availability;
-        if (availability) {
-          clauses.push(`availability = '${availability}'`);
-        }
-
-        return clauses.join(' and ');
-      },
+      cond: condFn,
       sort: (_a, _b, resources) => {
         const s = resources.query.sort;
         if (!s) {
@@ -64,6 +68,17 @@ ListRoute.manifest = Object.freeze({
       // XXX The following are not yet supported by CCMS
       // filter: 'jurassic',
       // tag: 'dino,ptero',
+    },
+  },
+  spectreCount: {
+    type: 'okapi',
+    path: (queryParams, pathParams) => {
+      // Same path-function as for the main 'spectres' manifest entry
+      return `cyclops/sets/${queryParams.addFrom || pathParams.setId}`;
+    },
+    params: {
+      countOnly: true,
+      cond: condFn,
     },
   },
   addToList: {
