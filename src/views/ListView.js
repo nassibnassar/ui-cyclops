@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MCLPagingTypes } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import packageInfo from '../../package';
 
@@ -85,7 +85,7 @@ function renderSearch(query, updateQuery) {
 }
 
 
-function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, addSpectre) {
+function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, addSpectre, pageAmount, onNeedMoreData, totalCount, pagingOffset) {
   const sortedColumn = query.sort?.replace(/^-/, '');
   const sortDirection = query.sort?.startsWith('-') ? 'descending' : 'ascending';
 
@@ -141,18 +141,25 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
 
   return (
     <>
+      totalCount={totalCount}
+      <br/>
       <MultiColumnList
         visibleColumns={Object.keys(fields)}
         columnMapping={columnMapping}
         columnWidths={columnWidths}
         formatter={formatter}
         contentData={contentData}
+        totalCount={totalCount}
         onHeaderClick={(_, data) => {
           const newSort = (query.sort === data.name) ? `-${data.name}` : data.name;
           updateQuery({ sort: newSort });
         }}
         sortedColumn={sortedColumn}
         sortDirection={sortDirection}
+        pagingType={MCLPagingTypes.PREV_NEXT}
+        pageAmount={pageAmount}
+        onNeedMoreData={onNeedMoreData}
+        pagingOffset={pagingOffset}
       />
       <Accordion
         closedByDefault
@@ -165,13 +172,14 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
 }
 
 
-export default function ListView({ loaded, name, spectres, spectreCount, query, updateQuery, addFrom, addSpectre, children }) {
+export default function ListView({ loaded, name, spectres, spectreCount, query, updateQuery, addFrom, addSpectre, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const intl = useIntl();
   const callout = useCallout();
 
   const nav = useNav();
   nav.update({ list: { name, location: useLocation() } });
+  const totalCount = spectreCount || spectres?.data.length;
   const count = spectreCount || intl.formatMessage({ id: 'ui-cyclops.at-least' }, { minValue: spectres?.data.length });
 
   return (
@@ -207,7 +215,7 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
         }
       >
         {loaded
-          ? renderList(spectres, nav, query, updateQuery, addFrom, name, callout, addSpectre)
+          ? renderList(spectres, nav, query, updateQuery, addFrom, name, callout, addSpectre, pageAmount, onNeedMoreData, totalCount, pagingOffset)
           : <Icon icon="spinner-ellipsis" />
         }
       </Pane>

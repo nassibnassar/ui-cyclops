@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { stripesConnect } from '@folio/stripes/core';
+import { StripesConnectedSource } from '@folio/stripes/smart-components';
 import ListView from '../views/ListView';
 
-function ListRoute({ resources, mutator, location, match, children }) {
+const INITIAL_RESULT_COUNT = 10;
+const RESULT_COUNT_INCREMENT = 10;
+
+function ListRoute({ stripes, resources, mutator, children, location, match }) {
+  const source = useMemo(() => {
+    return new StripesConnectedSource({ resources, mutator }, stripes.logger, 'spectres');
+  }, [resources, mutator, stripes.logger]);
+
+  const handleNeedMoreData = (_askAmount, index) => {
+    console.log(`handleNeedMoreData: _askAmount=${_askAmount}, index=${index}`);
+    source.fetchOffset(index);
+  };
+
   const query = new URLSearchParams(location.search);
   const addFrom = query.get('addFrom');
   const spectresResource = resources.spectres;
@@ -18,6 +31,10 @@ function ListRoute({ resources, mutator, location, match, children }) {
       updateQuery={mutator.query.update}
       addFrom={addFrom}
       addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, cond: `id = ${spectreId}` })}
+      pageAmount={RESULT_COUNT_INCREMENT}
+      onNeedMoreData={handleNeedMoreData}
+      pagingOffset={resources.resultOffset}
+      XXX_error_so_we_can_handle_errors_politely={undefined}
     >
       {children}
     </ListView>
@@ -44,6 +61,8 @@ function condFn(_a, _b, resources) {
 
 ListRoute.manifest = Object.freeze({
   query: {},
+  resultCount: { initialValue: INITIAL_RESULT_COUNT },
+  resultOffset: { initialValue: 0 },
   spectres: {
     type: 'okapi',
     path: (queryParams, pathParams) => {
@@ -56,15 +75,15 @@ ListRoute.manifest = Object.freeze({
       sort: (_a, _b, resources) => {
         const s = resources.query.sort;
         if (!s) {
-          return undefined;
+          return 'id'; // CCMS requires an explicit sort-order in order to do paging
         } else if (s.startsWith('-')) {
           return s.replace('-', '') + ' desc';
         } else {
           return s;
         }
       },
-      // offset: '200', // Paging not yet implemented
-      limit: '100',
+      offset: '%{resultOffset}',
+      limit: `${RESULT_COUNT_INCREMENT}`,
       // XXX The following are not yet supported by CCMS
       // filter: 'jurassic',
       // tag: 'dino,ptero',
