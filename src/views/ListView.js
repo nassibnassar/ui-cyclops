@@ -12,7 +12,7 @@ const fields = {
   author: ['200px'],
   title: ['450px'],
   full_vendor_name: ['200px'],
-  availability: ['140px'],
+  availability: ['240px'],
 };
 
 const searchableIndexes = [{ value: '', label: '-' }].concat(Object.entries(fields).map(([key]) => ({
