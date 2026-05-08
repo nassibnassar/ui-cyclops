@@ -3,8 +3,8 @@ import { stripesConnect } from '@folio/stripes/core';
 import { StripesConnectedSource } from '@folio/stripes/smart-components';
 import ListView from '../views/ListView';
 
-const INITIAL_RESULT_COUNT = 10;
-const RESULT_COUNT_INCREMENT = 10;
+const INITIAL_RESULT_COUNT = 20;
+const RESULT_COUNT_INCREMENT = 20;
 
 function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const source = useMemo(() => {
