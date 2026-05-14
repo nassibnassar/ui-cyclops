@@ -141,8 +141,6 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
 
   return (
     <>
-      totalCount={totalCount}
-      <br/>
       <MultiColumnList
         visibleColumns={Object.keys(fields)}
         columnMapping={columnMapping}
