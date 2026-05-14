@@ -10,38 +10,39 @@ import css from './ProjectView.css';
 import { PromptModal } from '../components/PromptModal';
 
 
-function renderProject(baseProject) {
-  // For historical reasons, the `funds` value might be either a
-  // single string that needs to be parsed apart, or a proper list. We
-  // need to handle both cases for now.
-  //
-  function formatFunds(entries) {
-    if (typeof entries === 'string') {
-      return (
-        <ul>
-          {entries.split('|').map(entry => (
-            <li key={entry}>
-              <code>{entry.replace(/:.*/, '')}</code>
-              &nbsp;
-              ({entry.replace(/.*?:/, '')})
-            </li>
-          ))}
-        </ul>
-      );
-    }
-
-    // Must be a list
+// For historical reasons, the `funds` value might be either a
+// single string that needs to be parsed apart, or a proper list. We
+// need to handle both cases for now.
+//
+function formatFunds(entries) {
+  if (typeof entries === 'string') {
     return (
       <ul>
-        {entries.map(entry => (
-          <li key={entry.id}>
-            <code>{entry.id}</code> ({entry.name})
+        {entries.split('|').map(entry => (
+          <li key={entry}>
+            <code>{entry.replace(/:.*/, '')}</code>
+            &nbsp;
+            ({entry.replace(/.*?:/, '')})
           </li>
         ))}
       </ul>
     );
   }
 
+  // Must be a list
+  return (
+    <ul>
+      {entries.map(entry => (
+        <li key={entry.id}>
+          <code>{entry.id}</code> ({entry.name})
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+
+function renderProject(baseProject) {
   const project = {
     ...baseProject,
 
