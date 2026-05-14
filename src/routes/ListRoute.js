@@ -12,7 +12,6 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   }, [resources, mutator, stripes.logger]);
 
   const handleNeedMoreData = (_askAmount, index) => {
-    console.log(`handleNeedMoreData: _askAmount=${_askAmount}, index=${index}`);
     source.fetchOffset(index);
   };
 
