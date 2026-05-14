@@ -10,6 +10,7 @@ import Tabs from './Tabs';
 import Settings from './settings';
 import HomeRoute from './routes/HomeRoute';
 import ProjectRoute from './routes/ProjectRoute';
+import EditProjectRoute from './routes/EditProjectRoute';
 import ListRoute from './routes/ListRoute';
 import SpectreRoute from './routes/SpectreRoute';
 
@@ -38,6 +39,7 @@ export default function Cyclops(props) {
         <Redirect exact from={path} to={`${path}/home`} />
         <Route path={`${path}/home`} exact component={HomeRoute} />
         <Route path={`${path}/project/:projectId`} exact component={ProjectRoute} />
+        <Route path={`${path}/project/:projectId/edit`} exact component={EditProjectRoute} />
         <NestedRoute path={`${path}/list/:projectId/:setId`} component={ListRoute}>
           <Route path={`${path}/list/:projectId/:setId/:spectreId`} exact component={SpectreRoute} />
         </NestedRoute>

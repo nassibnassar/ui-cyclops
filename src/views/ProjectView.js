@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, Headline, Button, MultiColumnList, Row, Col, KeyValue, ConfirmationModal } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, Headline, MenuSection, Button, MultiColumnList, Row, Col, KeyValue, ConfirmationModal, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { RCKV, CKV } from '../components/CKV';
 import packageInfo from '../../package';
@@ -15,6 +15,8 @@ import { PromptModal } from '../components/PromptModal';
 // need to handle both cases for now.
 //
 function formatFunds(entries) {
+  if (entries.length === 0) return <NoValue />;
+
   if (typeof entries === 'string') {
     return (
       <ul>
@@ -255,16 +257,26 @@ export default function ProjectView({ loaded, project, sets, addList, deleteList
     id="ui-cyclops.project.header"
     values={{
       count: sets?.sets.length,
-      project: nav.project.name,
+      project: nav.project.title,
     }}
   />;
+
+  const renderActionMenu = () => (
+    <MenuSection label="Actions">
+      <Button buttonStyle="dropdownItem" to={`${nav.project.altName}/edit`}>
+        <Icon size="small" icon="edit">
+          Edit
+        </Icon>
+      </Button>
+    </MenuSection>
+  );
 
   return (
     <Paneset static>
       <Pane defaultWidth="20%" paneTitle="">
         {/* Nothing to go here, unless we want an "About" text or something */}
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={paneTitle}>
+      <Pane defaultWidth="80%" paneTitle={paneTitle} actionMenu={renderActionMenu}>
         {!loaded
           ? <Icon icon="spinner-ellipsis" />
           : (
