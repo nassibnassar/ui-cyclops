@@ -1,80 +1,132 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Pane, Paneset, Icon, MenuSection, Button, Row, Col, KeyValue } from '@folio/stripes/components';
-import { useNav } from '../NavContext';
+import { TitleManager } from '@folio/stripes/core';
+import { Pane, Paneset, Icon, Row, Col, KeyValue, NoValue, Button, PaneFooter } from '@folio/stripes/components';
+import stripesFinalForm from '@folio/stripes/final-form';
 import { RCKV, CKV } from '../components/CKV';
+import { CF } from '../components/CF';
 
 
-export default function ProjectForm({ loaded, project }) {
-  const nav = useNav();
-  nav.update({ project: { ...project, location: useLocation() } });
-
-  const paneTitle = <FormattedMessage id="ui-cyclops.project.edit" values={{ project: nav.project.title }} />;
-
-  const renderActionMenu = () => (
-    <MenuSection label="Actions">
-      <Button buttonStyle="dropdownItem" to={`${nav.project.altName}/edit`}>
-        <Icon size="small" icon="edit">
-          Edit
-        </Icon>
-      </Button>
-    </MenuSection>
+function renderPaneFooter(handleSubmit, onCancel, pristine, submitting) {
+  return (
+    <PaneFooter
+      renderStart={(
+        <Button
+          buttonStyle="default mega"
+          id="clickable-cancel"
+          marginBottom0
+          onClick={onCancel}
+        >
+          <FormattedMessage id="stripes-components.cancel" />
+        </Button>
+      )}
+      renderEnd={(
+        <Button
+          buttonStyle="primary mega"
+          disabled={pristine || submitting}
+          id="clickable-update-harvestable"
+          marginBottom0
+          onClick={handleSubmit}
+          type="submit"
+        >
+          <FormattedMessage id="stripes-components.saveAndClose" />
+        </Button>
+      )}
+    />
   );
+}
+
+
+function validate(values) {
+  const errors = {};
+  const requiredTextMessage = <FormattedMessage id="ui-cyclops.fillIn" />;
+
+  ['altName', 'title'].forEach(fieldName => {
+    if (!values[fieldName]) {
+      errors[fieldName] = requiredTextMessage;
+    }
+  });
+
+  return errors;
+}
+
+
+function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting }) {
+  const title = initialValues?.name;
+  const paneTitle = <FormattedMessage id="ui-cyclops.project.edit" values={{ project: title }} />;
 
   return (
     <Paneset static>
       <Pane defaultWidth="20%" paneTitle="">
         {/* Nothing to go here, unless we want an "About" text or something */}
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={paneTitle} actionMenu={renderActionMenu}>
+      <Pane
+        defaultWidth="80%"
+        paneTitle={paneTitle}
+        footer={renderPaneFooter(handleSubmit, onClose, pristine, submitting)}
+      >
         {!loaded
           ? <Icon icon="spinner-ellipsis" />
           : (
-            <>
-              <Row>
-                <CKV rec={project} tag="title" xs={6} />
-                <CKV rec={project} tag="altName" xs={3} formatFn={x => <code>{x}</code>} />
-                <CKV rec={project} tag="action" xs={3} formatFn={(value) => value.name} />
-              </Row>
-              <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
-              <Row>
-                <Col xs={6}>
-                  XXX maintain list of funds
-                </Col>
-                <CKV
-                  xs={6}
-                  rec={project}
-                  tag="people"
-                  formatFn={
-                    x => (
+            <TitleManager record={title}>
+              <form>
+                <Row>
+                  <CF tag="title" xs={6} />
+                  <CF tag="altName" xs={3} />
+                  <CF tag="action.name" i18nTag="action" xs={3} />
+                </Row>
+                <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
+                <Row>
+                  <Col xs={6}>
+                    <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.funds" />}>
+                      <NoValue />
+                    </KeyValue>
+                  </Col>
+                  <CKV
+                    xs={6}
+                    rec={project}
+                    tag="people"
+                    formatFn={
+                      x => (
+                        <ul>
+                          {x?.map(y => <li key={y.name}>{y.name}: {y.role}</li>)}
+                        </ul>
+                      )
+                    }
+                  />
+                </Row>
+                <Row>
+                  <Col xs={6}>
+                    <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.locations" />}>
                       <ul>
-                        {x?.map(y => <li key={y.name}>{y.name}: {y.role}</li>)}
+                        {/* project.locations?.map(x => <li key={x.name}>{x.name}</li>) */}
                       </ul>
-                    )
-                  }
-                />
-              </Row>
-              <Row>
-                <Col xs={6}>
-                  <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.locations" />}>
-                    <ul>
-                      {project.locations?.map(x => <li key={x.name}>{x.name}</li>)}
-                    </ul>
-                  </KeyValue>
-                </Col>
-                <Col xs={6}>
-                  <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.tracks" />}>
-                    <ul>
-                      {project.tracks?.map(x => <li key={x.name}>{x.name}</li>)}
-                    </ul>
-                  </KeyValue>
-                </Col>
-              </Row>
-            </>
+                    </KeyValue>
+                  </Col>
+                  <Col xs={6}>
+                    <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.tracks" />}>
+                      <ul>
+                        {/* project.tracks?.map(x => <li key={x.name}>{x.name}</li>) */}
+                      </ul>
+                    </KeyValue>
+                  </Col>
+                </Row>
+              </form>
+            </TitleManager>
           )
         }
       </Pane>
     </Paneset>
   );
 }
+
+
+export default stripesFinalForm({
+  // initialValuesEqual: (a, b) => isEqual(a, b),
+  validate,
+  navigationCheck: true,
+  subscription: {
+    values: true,
+  },
+  // mutators: { setFieldData, ...arrayMutators }
+})(ProjectForm);
