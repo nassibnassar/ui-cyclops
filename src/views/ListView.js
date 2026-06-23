@@ -125,7 +125,7 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
   const formatter = {
     title: r => (
       !addFrom ?
-        <Link to={`${packageInfo.stripes.route}/list/${nav.project.id}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
+        <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${nav.list.name}/${r.id}`}>{r.title}</Link> :
         <>
           <Button marginBottom0 onClick={() => addSpectreToList(name, r.id, r.title)}>
             <Icon icon="plus-sign" />
