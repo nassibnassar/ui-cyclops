@@ -215,7 +215,7 @@ function renderList(sets, nav, callout,
         formatter={{
           name: r => <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${r.name}`}>{r.name}</Link>,
           'action-delete': r => (
-            r.name === 'reserve' ? null :
+            r.name === nav.project.altName + '.object' ? null :
             <Button marginBottom0 onClick={() => setListToDelete(r.name)}>
               <Icon icon="trash" />
               &nbsp;
