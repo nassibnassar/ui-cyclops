@@ -29,7 +29,7 @@ const columnWidths = Object.fromEntries(
   Object.entries(fields).map(([key, value]) => [key, value[0]])
 );
 
-// Determined experimentally from records in "reserve"
+// Determined experimentally from records in an old "reserve" list
 const availabilityValues = [
   'In stock',
   'Temporarily unavailable',
@@ -204,8 +204,8 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
           )
         }
         lastMenu={
-          name === 'reserve' || !!addFrom ? undefined :
-          <Button marginBottom0 to={`${name}?addFrom=reserve`}>
+          name === nav.project.altName + '.object' || !!addFrom ? undefined :
+            <Button marginBottom0 to={`${name}?addFrom=${nav.project.altName}.object`}>
             <Icon icon="plus-sign" />
             &nbsp;
             <FormattedMessage id="ui-cyclops.spectres.add" />
