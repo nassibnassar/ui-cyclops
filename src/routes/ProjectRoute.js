@@ -12,8 +12,8 @@ function ProjectRoute(props) {
     loaded={loaded}
     project={projectResource.records[0]}
     sets={setsResource.records[0]}
-    addList={(name) => props.mutator.sets.POST({ name })}
-    deleteList={(id) => props.mutator.sets.DELETE({ id })}
+    addList={(name) => props.mutator.allSets.POST({ name })}
+    deleteList={(id) => props.mutator.allSets.DELETE({ id })}
   />;
 }
 
@@ -24,7 +24,12 @@ ProjectRoute.manifest = Object.freeze({
   },
   sets: {
     type: 'okapi',
+    path: 'cyclops/projects/:{projectId}/sets',
+  },
+  allSets: {
+    type: 'okapi',
     path: 'cyclops/sets',
+    fetch: false,
     POST: {
       throwErrors: false,
     },
