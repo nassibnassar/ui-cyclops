@@ -1,7 +1,7 @@
 {
   "name": "@folio/cyclops",
   "version": "1.1.0",
-  "description": "Description for cyclops",
+  "description": "CYCLOPS: collective collection management",
   "main": "src/index.js",
   "repository": "",
   "license": "Apache-2.0",
@@ -40,7 +40,9 @@
   },
   "dependencies": {
     "fast-deep-equal": "^3.0.0",
-    "prop-types": "^15.6.0"
+    "prop-types": "^15.6.0",
+    "react-final-form": "^6.0.0",
+    "react-final-form-arrays": "^3.0.0"
   },
   "peerDependencies": {
     "@folio/stripes": "^10.1.0",
