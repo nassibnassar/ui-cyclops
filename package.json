@@ -6,7 +6,7 @@
   "repository": "",
   "license": "Apache-2.0",
   "scripts": {
-    "start": "stripes serve",
+    "start": "stripes serve --startProxy --port 3015 --okapi https://indexdata-dev-new-okapi.folio-dev.indexdata.com --tenant indexdata stripes.config.js",
     "test": "echo 'no tests yet'",
     "build": "stripes build --output ./output",
     "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json ",
