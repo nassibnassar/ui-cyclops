@@ -11,6 +11,7 @@ import Settings from './settings';
 import HomeRoute from './routes/HomeRoute';
 import ProjectRoute from './routes/ProjectRoute';
 import EditProjectRoute from './routes/EditProjectRoute';
+import CreateProjectRoute from './routes/CreateProjectRoute';
 import ListRoute from './routes/ListRoute';
 import SpectreRoute from './routes/SpectreRoute';
 
@@ -38,6 +39,7 @@ export default function Cyclops(props) {
       <Switch>
         <Redirect exact from={path} to={`${path}/home`} />
         <Route path={`${path}/home`} exact component={HomeRoute} />
+        <Route path={`${path}/project/create`} exact component={CreateProjectRoute} />
         <Route path={`${path}/project/:projectId`} exact component={ProjectRoute} />
         <Route path={`${path}/project/:projectId/edit`} exact component={EditProjectRoute} />
         <NestedRoute path={`${path}/list/:projectId/:setId`} component={ListRoute}>

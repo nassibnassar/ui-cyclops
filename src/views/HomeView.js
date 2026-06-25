@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Pane, Paneset, Icon, MultiColumnList } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, MultiColumnList, Button } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import packageInfo from '../../package';
 
@@ -35,7 +35,17 @@ export default function HomeView({ loaded, projects }) {
       <Pane defaultWidth="20%" paneTitle="">
         {/* Nothing to go here, unless we want an "About" text or something */}
       </Pane>
-      <Pane defaultWidth="80%" paneTitle={<FormattedMessage id="ui-cyclops.projects.count" values={{ count: projects?.projects?.length }} />}>
+      <Pane
+        defaultWidth="80%"
+        paneTitle={<FormattedMessage id="ui-cyclops.projects.count" values={{ count: projects?.projects?.length }} />}
+        lastMenu={
+          <Button to="project/create">
+            <Icon icon="plus-sign" />
+            &nbsp;
+            <FormattedMessage id="stripes-components.addNew" />
+          </Button>
+        }
+      >
         {loaded
           ? renderList(projects)
           : <Icon icon="spinner-ellipsis" />

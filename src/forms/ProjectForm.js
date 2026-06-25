@@ -53,7 +53,9 @@ function validate(values) {
 
 function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting }) {
   const title = initialValues?.name;
-  const paneTitle = <FormattedMessage id="ui-cyclops.project.edit" values={{ project: title }} />;
+  const paneTitle = initialValues?.id
+    ? <FormattedMessage id="ui-cyclops.project.edit" values={{ project: title }} />
+    : <FormattedMessage id="ui-cyclops.project.new" />;
 
   return (
     <Paneset static>

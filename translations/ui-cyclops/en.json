@@ -8,6 +8,7 @@
   "at-least": "at least {minValue}",
   "project.header": "Project {project} ({count} {count, plural, one {list} other {lists}})",
   "project.edit": "Edit project {project}",
+  "project.new": "New project",
   "project.lists": "Lists in this project",
   "project.field.title": "Project title",
   "project.field.altName": "Alt name (583)",
