@@ -1,14 +1,40 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { useCallout } from '@folio/stripes/core';
 import { Pane, LoadingPane, IconButton, Row, Col, Headline, KeyValue } from '@folio/stripes/components';
 import ActionSection from './ActionSection';
 import css from './SpectreView.css';
 import packageInfo from '../../package';
 
-function SpectreRoute({ loaded, match, spectre }) {
+function SpectreRoute({ loaded, match, spectre, funds, mutator }) {
+  const callout = useCallout();
+
   if (!loaded) return <LoadingPane />;
 
   const listUrl = `${packageInfo.stripes.route}/list/${match.params.projectId}/${match.params.setId}`;
+
+  const onChangeFund = async (fund) => {
+    try {
+      await mutator.spectreUpdate.POST({ decision: true, fund });
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.spectre.set-fund.success" values={{ fund }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.spectre.set-fund.failure"
+          values={{
+            fund,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+    }
+  };
   return (
     <Pane
       defaultWidth="40%"
@@ -58,7 +84,7 @@ function SpectreRoute({ loaded, match, spectre }) {
       <Row>
         <Col xs={12} className={css.miniPane}>
           <Headline tag="h3">Actions</Headline>
-          <ActionSection spectre={spectre} />
+          <ActionSection key={match.params.spectreId} spectre={spectre} funds={funds} onChangeFund={onChangeFund} />
         </Col>
       </Row>
     </Pane>

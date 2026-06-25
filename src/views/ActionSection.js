@@ -1,11 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { IconButton, Row, Col, Button, Select } from '@folio/stripes/components';
 
-function ActionSection() {
+function ActionSection({ spectre, funds = [], onChangeFund }) {
+  // The fund value from the server may be of the form "id:description"; we only
+  // care about the id, which is what the dropdown options are keyed on.
+  const currentFund = spectre?.fund?.replace(/:.*/, '') || '';
+
+  // Seed from the spectre's current fund, falling back to an empty selection
+  // when none is defined. The leading empty option lets that state be shown.
+  const [fund, setFund] = useState(currentFund);
+
+  // Re-sync when the underlying spectre changes — either navigating between
+  // spectres or the resource finishing an asynchronous refetch. Without this,
+  // the locally-held value stays stale whenever the component is reused before
+  // the new spectre's data has arrived.
+  useEffect(() => {
+    setFund(currentFund);
+  }, [currentFund]);
+
   const fundOptions = [
-    { value: 'fund1', label: 'PALCI cultural preservation' },
-    { value: 'fund2', label: 'Coalition for Slavic literature' },
+    { value: '', label: '' },
+    ...funds.map(f => ({ value: f, label: f })),
   ];
+
+  const handleChangeFund = (e) => {
+    setFund(e.target.value);
+    onChangeFund(e.target.value);
+  };
 
   const trackOptions = [
     { value: 'track1', label: 'Offsite' },
@@ -26,7 +47,7 @@ function ActionSection() {
         <Button type="button">Buy</Button>
       </Col>
       <Col xs={4}>
-        <Select label="Fund" dataOptions={fundOptions} />
+        <Select label="Fund" dataOptions={fundOptions} value={fund} onChange={handleChangeFund} />
         <Select label="Track" dataOptions={trackOptions} />
       </Col>
       <Col xs={4}>

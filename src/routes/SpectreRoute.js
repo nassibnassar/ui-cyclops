@@ -12,12 +12,15 @@ function response2spectre(response) {
   return spectre;
 }
 
-function SpectreRoute({ resources, match }) {
+function SpectreRoute({ resources, mutator, match }) {
   const spectreResource = resources.spectre;
-  const loaded = spectreResource && spectreResource.hasLoaded;
+  const fundsResource = resources.funds;
+  const loaded = (spectreResource && spectreResource.hasLoaded &&
+                  fundsResource && fundsResource.hasLoaded);
   const spectre = response2spectre(spectreResource.records[0]);
+  const funds = (fundsResource.records[0] || {}).funds || [];
 
-  return <SpectreView loaded={loaded} match={match} spectre={spectre} />;
+  return <SpectreView loaded={loaded} match={match} spectre={spectre} funds={funds} mutator={mutator} />;
 }
 
 SpectreRoute.manifest = Object.freeze({
@@ -28,7 +31,18 @@ SpectreRoute.manifest = Object.freeze({
       fields: '*',
       cond: (_, pathParams) => `id=${pathParams.spectreId}`,
     },
-  }
+  },
+  spectreUpdate: {
+    type: 'okapi',
+    path: 'cyclops/sets/:{setId}/:{spectreId}',
+    fetch: false,
+    clientGeneratePk: false,
+    throwErrors: false,
+  },
+  funds: {
+    type: 'okapi',
+    path: 'cyclops/funds',
+  },
 });
 
 export default stripesConnect(SpectreRoute);

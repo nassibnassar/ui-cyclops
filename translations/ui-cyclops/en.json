@@ -28,6 +28,8 @@
   "project.delete-list.failure": "Could not delete list <code>{name}</code>: status {status} ({statusText}): {body}",
   "list.add-spectre.success": "Added spectre {spectreId} ({title}) to list <code>{list}</code>",
   "list.add-spectre.failure": "Could not add spectre {spectreId} ({title}) to list <code>{list}</code>: status {status} ({statusText}): {body}",
+  "spectre.set-fund.success": "Set fund to <code>{fund}</code>",
+  "spectre.set-fund.failure": "Could not set fund to <code>{fund}</code>: status {status} ({statusText}): {body}",
   "field.id": "ID",
   "field.name": "Name",
   "field.action-delete": "Delete",
