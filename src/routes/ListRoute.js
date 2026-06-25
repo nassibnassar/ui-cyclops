@@ -47,7 +47,11 @@ function condFn(_a, _b, resources) {
   const query = resources.query.query;
   const qindex = resources.query.qindex;
   if (query && qindex) {
-    clauses.push(`${qindex} = '${query}'`);
+    if (qindex === 'title' || qindex === 'author' || qindex === 'author' || qindex === 'full_vendor_name') {
+      clauses.push(`${qindex} ilike '%${query}%'`);
+    } else {
+      clauses.push(`${qindex} = '${query}'`);
+    }
   }
 
   const availability = resources.query.availability;
