@@ -96,7 +96,9 @@
           "cyclops.sets.add-tags",
           "cyclops.sets.remove-tags",
           "cyclops.projects.collection.get",
-          "cyclops.projects.get"
+          "cyclops.projects.get",
+          "cyclops.funds.read",
+	  "cyclops.sets.spectre.update"
         ]
       },
       {
@@ -111,7 +113,8 @@
           "cyclops.sets.delete",
           "cyclops.projects.post",
           "cyclops.projects.delete",
-          "cyclops.projects.put"
+          "cyclops.projects.put",
+          "cyclops.funds.create"
         ]
       }
     ]
