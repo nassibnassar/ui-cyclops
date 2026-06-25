@@ -1,10 +1,12 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Field } from 'react-final-form';
+import arrayMutators from 'final-form-arrays';
 import { TitleManager } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, Row, Col, KeyValue, NoValue, Button, PaneFooter } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, Row, Col, KeyValue, Select, Button, PaneFooter } from '@folio/stripes/components';
 import stripesFinalForm from '@folio/stripes/final-form';
 import { RCKV, CKV } from '../components/CKV';
-import { CF } from '../components/CF';
+import { CF, CLF } from '../components/CF';
 
 
 function renderPaneFooter(handleSubmit, onCancel, pristine, submitting) {
@@ -51,8 +53,9 @@ function validate(values) {
 }
 
 
-function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting }) {
+function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [] }) {
   const title = initialValues?.name;
+  const fundOptions = funds.map(id => ({ value: id, label: id }));
   const paneTitle = initialValues?.id
     ? <FormattedMessage id="ui-cyclops.project.edit" values={{ project: title }} />
     : <FormattedMessage id="ui-cyclops.project.new" />;
@@ -79,11 +82,19 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                 </Row>
                 <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
                 <Row>
-                  <Col xs={6}>
-                    <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.funds" />}>
-                      <NoValue />
-                    </KeyValue>
-                  </Col>
+                  <CLF
+                    tag="funds"
+                    xs={6}
+                    emptyValue={{ id: '' }}
+                    renderEntry={subname => (
+                      <Field
+                        name={`${subname}.id`}
+                        component={Select}
+                        dataOptions={fundOptions}
+                        placeholder="Select fund"
+                      />
+                    )}
+                  />
                   <CKV
                     xs={6}
                     rec={project}
@@ -127,8 +138,10 @@ export default stripesFinalForm({
   // initialValuesEqual: (a, b) => isEqual(a, b),
   validate,
   navigationCheck: true,
+  mutators: {
+    ...arrayMutators,
+  },
   subscription: {
     values: true,
   },
-  // mutators: { setFieldData, ...arrayMutators }
 })(ProjectForm);

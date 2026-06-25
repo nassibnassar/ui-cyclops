@@ -30,7 +30,7 @@ const ListField = ({ name, label, renderEntry, component, emptyValue }) => {
               </div>
             ))}
             <Button onClick={() => fields.push(emptyValue || '')}>
-              <FormattedMessage id="ui-inventory-import.add" />
+              <FormattedMessage id="ui-cyclops.button.add" />
             </Button>
           </>
         )}
