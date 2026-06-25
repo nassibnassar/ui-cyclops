@@ -1,24 +1,46 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
-import { stripesConnect } from '@folio/stripes/core';
+import { stripesConnect, useCallout } from '@folio/stripes/core';
 import ProjectForm from '../forms/ProjectForm';
 
 function CreateProjectRoute({ resources, mutator }) {
   const history = useHistory();
+  const callout = useCallout();
 
   const handleClose = () => {
     history.push('..');
   };
 
-  const handleSubmit = (record) => {
+  const handleSubmit = async (record) => {
     // The controlled vocabulary only edits fund IDs; the server does not need
     // (and we do not retain) the human-readable `name` of each fund.
     const normalized = {
       ...record,
       funds: (record.funds || []).map(({ id }) => ({ id })),
     };
-    mutator.project.POST(normalized)
-      .then((newRecord) => history.push(`./${newRecord.altName}`));
+
+    try {
+      const newRecord = await mutator.project.POST(normalized);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.project.create.success" values={{ name: newRecord.altName }} />,
+      });
+      history.push(`./${newRecord.altName}`);
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.project.create.failure"
+          values={{
+            name: record.altName,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+    }
   };
 
   const fundsResource = resources.funds;
