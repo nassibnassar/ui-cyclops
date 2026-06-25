@@ -49,9 +49,20 @@ function EditProjectRoute({ resources, mutator, match }) {
                   fundsResource && fundsResource.hasLoaded);
   const funds = (fundsResource.records[0] || {}).funds || [];
 
+  // The action is fetched as "<id>:<name>", but only the <id> is valid for
+  // editing and submission, so strip the descriptive suffix for the form.
+  const project = projectResource.records[0];
+  const initialValues = project && {
+    ...project,
+    action: {
+      ...project.action,
+      name: (project.action?.name || '').replace(/:.*/, ''),
+    },
+  };
+
   return <ProjectForm
     loaded={loaded}
-    initialValues={projectResource.records[0]}
+    initialValues={initialValues}
     funds={funds}
     onSubmit={handleSubmit}
     onClose={handleClose}
