@@ -53,9 +53,12 @@ function validate(values) {
 }
 
 
+const ACTION_NAMES = ['acquire', 'retire', 'digitize', 'move', 'other'];
+
 function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [] }) {
   const title = initialValues?.name;
   const fundOptions = funds.map(id => ({ value: id, label: id }));
+  const actionOptions = ACTION_NAMES.map(name => ({ value: name, label: name }));
   const paneTitle = initialValues?.id
     ? <FormattedMessage id="ui-cyclops.project.edit" values={{ project: title }} />
     : <FormattedMessage id="ui-cyclops.project.new" />;
@@ -78,7 +81,7 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                 <Row>
                   <CF tag="title" xs={6} />
                   <CF tag="altName" xs={3} />
-                  <CF tag="action.name" i18nTag="action" xs={3} />
+                  <CF tag="action.name" i18nTag="action" xs={3} component={Select} dataOptions={actionOptions} />
                 </Row>
                 <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
                 <Row>
