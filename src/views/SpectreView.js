@@ -13,20 +13,20 @@ function SpectreRoute({ loaded, match, spectre, funds, mutator }) {
 
   const listUrl = `${packageInfo.stripes.route}/list/${match.params.projectId}/${match.params.setId}`;
 
-  const onChangeFund = async (fund) => {
+  const decide = async (payload, messageId, values = {}) => {
     try {
-      await mutator.spectreUpdate.POST({ decision: true, fund });
+      await mutator.spectreUpdate.POST({ decision: spectre.decision, fund: spectre.fund?.replace(/:.*/, ''), ...payload });
       callout.sendCallout({
-        message: <FormattedMessage id="ui-cyclops.spectre.set-fund.success" values={{ fund }} />,
+        message: <FormattedMessage id={`${messageId}.success`} values={values} />,
       });
     } catch (res) {
       callout.sendCallout({
         type: 'error',
         timeout: 0,
         message: <FormattedMessage
-          id="ui-cyclops.spectre.set-fund.failure"
+          id={`${messageId}.failure`}
           values={{
-            fund,
+            ...values,
             status: res.status,
             statusText: res.statusText,
             body: await res.text(),
@@ -35,6 +35,9 @@ function SpectreRoute({ loaded, match, spectre, funds, mutator }) {
       });
     }
   };
+
+  const onChangeFund = (fund) => decide({ fund }, 'ui-cyclops.spectre.set-fund', { fund });
+  const onDecide = () => decide({ decision: true }, 'ui-cyclops.spectre.decision');
   return (
     <Pane
       defaultWidth="40%"
@@ -84,7 +87,7 @@ function SpectreRoute({ loaded, match, spectre, funds, mutator }) {
       <Row>
         <Col xs={12} className={css.miniPane}>
           <Headline tag="h3">Actions</Headline>
-          <ActionSection key={match.params.spectreId} spectre={spectre} funds={funds} onChangeFund={onChangeFund} />
+          <ActionSection key={match.params.spectreId} spectre={spectre} funds={funds} onChangeFund={onChangeFund} onDecide={onDecide} />
         </Col>
       </Row>
     </Pane>
