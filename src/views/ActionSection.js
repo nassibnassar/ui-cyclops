@@ -47,7 +47,7 @@ function ActionSection({ spectre, funds = [], onChangeFund, onDecide }) {
     <Row>
       {/* Replace text with 118n tags */}
       <Col xs={2} style={{ paddingTop: '1.7em' }}>
-        <Button type="button" disabled={!!spectre?.decision} onClick={onDecide}>{actionName || 'Buy'}</Button>
+        <Button type="button" disabled={!!spectre?.decision || !fund} onClick={onDecide}>{actionName || 'Buy'}</Button>
       </Col>
       <Col xs={4}>
         <Select label="Fund" dataOptions={fundOptions} value={fund} onChange={handleChangeFund} />
