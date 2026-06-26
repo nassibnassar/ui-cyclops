@@ -58,7 +58,7 @@ const ACTION_NAMES = ['acquire', 'retire', 'digitize', 'move', 'other'];
 function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [] }) {
   const title = initialValues?.name;
   const fundOptions = funds.map(id => ({ value: id, label: id }));
-  const actionOptions = ACTION_NAMES.map(name => ({ value: name, label: name }));
+  const actionOptions = ACTION_NAMES.map(name => ({ value: name, label: name.charAt(0).toUpperCase() + name.slice(1) }));
   const paneTitle = initialValues?.id
     ? <FormattedMessage id="ui-cyclops.project.edit" values={{ project: title }} />
     : <FormattedMessage id="ui-cyclops.project.new" />;
