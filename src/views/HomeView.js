@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Pane, Paneset, Icon, MultiColumnList, Button } from '@folio/stripes/components';
+import { useCallout } from '@folio/stripes/core';
+import { Pane, Paneset, Icon, MultiColumnList, Button, ConfirmationModal } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import packageInfo from '../../package';
 
 
-function renderList(projects) {
+function renderList(projects, callout, projectToDelete, setProjectToDelete, deleteProject) {
+  async function actuallyDeleteProject(project) {
+    setProjectToDelete(undefined);
+    const name = project.name;
+
+    try {
+      await deleteProject(project.altName);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.projects.delete.success" values={{ name }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.projects.delete.failure"
+          values={{
+            name,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+    }
+  }
+
   return (
     <>
       <div />{/* For some reason, if we omit this the MCL does not render */}
@@ -15,18 +42,38 @@ function renderList(projects) {
           id: <FormattedMessage id="ui-cyclops.field.id" />,
           name: <FormattedMessage id="ui-cyclops.field.name" />,
           altName: <FormattedMessage id="ui-cyclops.field.altName" />,
+          'action-delete': <FormattedMessage id="ui-cyclops.field.action-delete" />,
         }}
+        visibleColumns={['id', 'name', 'altName', 'action-delete']}
         contentData={projects.projects}
         formatter={{
           altName: r => <Link to={`${packageInfo.stripes.route}/project/${r.altName}`}>{r.altName}</Link>,
+          'action-delete': r => (
+            <Button marginBottom0 onClick={() => setProjectToDelete(r)}>
+              <Icon icon="trash" />
+              &nbsp;
+              <FormattedMessage id="stripes-core.button.delete" />
+            </Button>
+          ),
         }}
+      />
+
+      <ConfirmationModal
+        heading={<FormattedMessage id="ui-cyclops.projects.delete.heading" />}
+        open={!!projectToDelete}
+        onConfirm={() => actuallyDeleteProject(projectToDelete)}
+        onCancel={() => setProjectToDelete(undefined)}
+        message={<FormattedMessage id="ui-cyclops.projects.delete.message" />}
       />
     </>
   );
 }
 
 
-export default function HomeView({ loaded, projects }) {
+export default function HomeView({ loaded, projects, deleteProject }) {
+  const [projectToDelete, setProjectToDelete] = useState();
+  const callout = useCallout();
+
   const nav = useNav();
   nav.update({ home: { location: useLocation() } });
 
@@ -47,7 +94,7 @@ export default function HomeView({ loaded, projects }) {
         }
       >
         {loaded
-          ? renderList(projects)
+          ? renderList(projects, callout, projectToDelete, setProjectToDelete, deleteProject)
           : <Icon icon="spinner-ellipsis" />
         }
       </Pane>
