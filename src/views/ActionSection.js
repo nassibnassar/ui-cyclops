@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { IconButton, Row, Col, Button, Select } from '@folio/stripes/components';
+import { useNav } from '../NavContext';
 
 function ActionSection({ spectre, funds = [], onChangeFund }) {
+  const nav = useNav();
+  const actionName = nav?.project?.action?.name?.replace(/.*:/, '');
   // The fund value from the server may be of the form "id:description"; we only
   // care about the id, which is what the dropdown options are keyed on.
   const currentFund = spectre?.fund?.replace(/:.*/, '') || '';
@@ -44,7 +47,7 @@ function ActionSection({ spectre, funds = [], onChangeFund }) {
     <Row>
       {/* Replace text with 118n tags */}
       <Col xs={2} style={{ paddingTop: '1.7em' }}>
-        <Button type="button">Buy</Button>
+        <Button type="button">{actionName || 'Buy'}</Button>
       </Col>
       <Col xs={4}>
         <Select label="Fund" dataOptions={fundOptions} value={fund} onChange={handleChangeFund} />
