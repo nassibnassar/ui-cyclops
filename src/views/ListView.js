@@ -205,7 +205,7 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
         }
         lastMenu={
           name === nav.project.altName + '.object' || !!addFrom ? undefined :
-            <Button marginBottom0 to={`${name}?addFrom=${nav.project.altName}.object`}>
+          <Button marginBottom0 to={`${name}?addFrom=${nav.project.altName}.object`}>
             <Icon icon="plus-sign" />
             &nbsp;
             <FormattedMessage id="ui-cyclops.spectres.add" />
