@@ -24,7 +24,7 @@ export const CKV = ({ rec, tag, i18nTag, xs, formatFn = x => x }) => {
 };
 
 CKV.propTypes = {
-  rec: PropTypes.object.isRequired,
+  rec: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   tag: PropTypes.string.isRequired,
   i18nTag: PropTypes.string, // if defined, use this translation tag instead of `tag`
   xs: PropTypes.number.isRequired,

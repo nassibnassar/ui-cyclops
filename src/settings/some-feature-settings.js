@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 export default class FeatureSettings extends React.Component {
   static propTypes = {
-    label: PropTypes.object.isRequired,
+    label: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   };
 
   render() {
