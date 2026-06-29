@@ -6,7 +6,7 @@ import ActionSection from './ActionSection';
 import css from './SpectreView.css';
 import packageInfo from '../../package';
 
-function SpectreRoute({ loaded, match, spectre, funds, mutator }) {
+function SpectreView({ loaded, match, spectre, funds, mutator }) {
   const callout = useCallout();
 
   if (!loaded) return <LoadingPane />;
@@ -94,4 +94,4 @@ function SpectreRoute({ loaded, match, spectre, funds, mutator }) {
   );
 }
 
-export default SpectreRoute;
+export default SpectreView;
