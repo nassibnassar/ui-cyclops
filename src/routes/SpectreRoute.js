@@ -14,11 +14,17 @@ function response2spectre(response) {
 
 function SpectreRoute({ resources, mutator, match }) {
   const spectreResource = resources.spectre;
-  const fundsResource = resources.funds;
+  const projectResource = resources.project;
   const loaded = (spectreResource && spectreResource.hasLoaded &&
-                  fundsResource && fundsResource.hasLoaded);
+                  projectResource && projectResource.hasLoaded);
   const spectre = response2spectre(spectreResource.records[0]);
-  const funds = (fundsResource.records[0] || {}).funds || [];
+
+  // Populate the Fund dropdown from the funds defined on the associated
+  // project rather than the global fund list. Project funds are stored as
+  // { id, name }; map them to the { name, title } shape ActionSection expects,
+  // keying the option value on the fund id (which is what spectre.fund holds).
+  const projectFunds = (projectResource.records[0] || {}).funds || [];
+  const funds = projectFunds.map(f => ({ name: f.id, title: f.name }));
 
   return <SpectreView loaded={loaded} match={match} spectre={spectre} funds={funds} mutator={mutator} />;
 }
@@ -39,9 +45,9 @@ SpectreRoute.manifest = Object.freeze({
     clientGeneratePk: false,
     throwErrors: false,
   },
-  funds: {
+  project: {
     type: 'okapi',
-    path: 'cyclops/funds',
+    path: 'cyclops/projects/:{projectId}',
   },
 });
 
