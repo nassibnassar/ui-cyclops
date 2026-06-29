@@ -61,7 +61,7 @@ const ACTION_NAMES = ['acquire', 'retire', 'digitize', 'move', 'other'];
 
 function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [] }) {
   const title = initialValues?.name;
-  const fundOptions = funds.map(id => ({ value: id, label: id }));
+  const fundOptions = funds.map(f => ({ value: f.name, label: f.title }));
   const actionOptions = [
     // Leading empty option so the dropdown reads as empty until a value is
     // chosen, rather than defaulting to displaying the first action name.

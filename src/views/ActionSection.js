@@ -23,7 +23,7 @@ function ActionSection({ spectre, funds = [], onChangeFund, onDecide }) {
 
   const fundOptions = [
     { value: '', label: '' },
-    ...funds.map(f => ({ value: f, label: f })),
+    ...funds.map(f => ({ value: f.name, label: f.title })),
   ];
 
   const handleChangeFund = (e) => {
