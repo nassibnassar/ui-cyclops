@@ -10,28 +10,9 @@ import css from './ProjectView.css';
 import { PromptModal } from '../components/PromptModal';
 
 
-// For historical reasons, the `funds` value might be either a
-// single string that needs to be parsed apart, or a proper list. We
-// need to handle both cases for now.
-//
 function formatFunds(entries) {
   if (entries.length === 0) return <NoValue />;
 
-  if (typeof entries === 'string') {
-    return (
-      <ul>
-        {entries.split('|').map(entry => (
-          <li key={entry}>
-            <code>{entry.replace(/:.*/, '')}</code>
-            &nbsp;
-            ({entry.replace(/.*?:/, '')})
-          </li>
-        ))}
-      </ul>
-    );
-  }
-
-  // Must be a list
   return (
     <ul>
       {entries.map(entry => (
