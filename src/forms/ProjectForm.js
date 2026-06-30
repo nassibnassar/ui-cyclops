@@ -49,8 +49,8 @@ function validate(values) {
     }
   });
 
-  if (!values.action?.name) {
-    errors.action = { name: requiredTextMessage };
+  if (!values.action?.id) {
+    errors.action = { id: requiredTextMessage };
   }
 
   return errors;
@@ -58,6 +58,12 @@ function validate(values) {
 
 
 const ACTION_NAMES = ['acquire', 'retire', 'digitize', 'move', 'other'];
+
+const LOCATION_OPTIONS = [
+  { value: 'clockss', label: 'CLOCKSS' },
+  { value: 'lehigh', label: 'LeHigh' },
+  { value: 'nyu', label: 'New York University' },
+];
 
 function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [] }) {
   const title = initialValues?.name;
@@ -90,7 +96,7 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                 <Row>
                   <CF tag="title" xs={6} />
                   <CF tag="altName" xs={3} />
-                  <CF tag="action.name" i18nTag="action" xs={3} component={Select} dataOptions={actionOptions} />
+                  <CF tag="action.id" i18nTag="action" xs={3} component={Select} dataOptions={actionOptions} />
                 </Row>
                 <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
                 <Row>
@@ -121,13 +127,34 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                   />
                 </Row>
                 <Row>
-                  <Col xs={6}>
-                    <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.locations" />}>
-                      <ul>
-                        {/* project.locations?.map(x => <li key={x.name}>{x.name}</li>) */}
-                      </ul>
-                    </KeyValue>
-                  </Col>
+                  <CLF
+                    tag="origins"
+                    xs={6}
+                    emptyValue={{ id: '' }}
+                    renderEntry={subname => (
+                      <Field
+                        name={`${subname}.id`}
+                        component={Select}
+                        dataOptions={LOCATION_OPTIONS}
+                        placeholder="Select location"
+                      />
+                    )}
+                  />
+                  <CLF
+                    tag="destinations"
+                    xs={6}
+                    emptyValue={{ id: '' }}
+                    renderEntry={subname => (
+                      <Field
+                        name={`${subname}.id`}
+                        component={Select}
+                        dataOptions={LOCATION_OPTIONS}
+                        placeholder="Select location"
+                      />
+                    )}
+                  />
+                </Row>
+                <Row>
                   <Col xs={6}>
                     <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.tracks" />}>
                       <ul>

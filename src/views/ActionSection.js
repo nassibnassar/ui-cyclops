@@ -4,7 +4,7 @@ import { useNav } from '../NavContext';
 
 function ActionSection({ spectre, funds = [], onChangeFund, onDecide }) {
   const nav = useNav();
-  const actionName = nav?.project?.action?.name?.replace(/.*:/, '');
+  const actionName = nav?.project?.action?.name;
   // The fund value from the server may be of the form "id:description"; we only
   // care about the id, which is what the dropdown options are keyed on.
   const currentFund = spectre?.fund?.replace(/:.*/, '') || '';

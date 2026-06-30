@@ -40,17 +40,6 @@ function renderProject(baseProject) {
         role: 'Visionary',
       },
     ],
-    locations: [
-      {
-        name: 'Lehigh',
-      },
-      {
-        name: 'NYU',
-      },
-      {
-        name: 'CLOCKSS',
-      },
-    ],
     tracks: [
       {
         name: 'Offsite',
@@ -72,6 +61,18 @@ function renderProject(baseProject) {
         <CKV rec={project} tag="action" xs={3} formatFn={(value) => value.name} />
       </Row>
       <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
+      <RCKV
+        xs={6}
+        rec={project}
+        tag="people"
+        formatFn={
+          x => (
+            <ul>
+              {x.map(y => <li key={y.name}>{y.name}: {y.role}</li>)}
+            </ul>
+          )
+        }
+      />
       <Row>
         <CKV
           rec={project}
@@ -79,31 +80,26 @@ function renderProject(baseProject) {
           xs={6}
           formatFn={formatFunds}
         />
-        <CKV
-          xs={6}
-          rec={project}
-          tag="people"
-          formatFn={
-            x => (
-              <ul>
-                {x.map(y => <li key={y.name}>{y.name}: {y.role}</li>)}
-              </ul>
-            )
-          }
-        />
-      </Row>
-      <Row>
-        <Col xs={6}>
-          <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.locations" />}>
-            <ul>
-              {project.locations.map(x => <li key={x.name}>{x.name}</li>)}
-            </ul>
-          </KeyValue>
-        </Col>
         <Col xs={6}>
           <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.tracks" />}>
             <ul>
               {project.tracks.map(x => <li key={x.name}>{x.name}</li>)}
+            </ul>
+          </KeyValue>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={6}>
+          <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.origins" />}>
+            <ul>
+              {project.origins.map(x => <li key={x.name}>{x.name}</li>)}
+            </ul>
+          </KeyValue>
+        </Col>
+        <Col xs={6}>
+          <KeyValue label={<FormattedMessage id="ui-cyclops.project.field.destinations" />}>
+            <ul>
+              {project.destinations.map(x => <li key={x.name}>{x.name}</li>)}
             </ul>
           </KeyValue>
         </Col>
