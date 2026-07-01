@@ -66,6 +66,7 @@
     ],
     "displayName": "ui-cyclops.meta.title",
     "route": "/cyclops",
+    "queryResource": "query",
     "okapiInterfaces": {},
     "permissionSets": [
       {

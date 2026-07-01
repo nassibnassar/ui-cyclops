@@ -54,7 +54,7 @@ function renderSearch(query, updateQuery, savedFilters) {
   };
 
   const filterOptions = savedFilters.map(name => ({ value: name, label: name }));
-  const selectedFilters = (query.filters || []).map(name => ({ value: name, label: name }));
+  const selectedFilters = [].concat(query.filters || []).map(name => ({ value: name, label: name }));
 
   return (
     <form onSubmit={onSubmitSearch}>

@@ -65,10 +65,10 @@ function condFn(_a, _b, resources) {
     clauses.push(`availability = '${availability}'`);
   }
 
-  const filters = resources.query.filters;
-  if (filters && filters.length) {
-    filters.forEach(filterName => clauses.push(`filter(${filterName})`));
-  }
+  // query-string yields a bare string for a single value and an array for
+  // several, so normalise to an array before iterating.
+  const filters = [].concat(resources.query.filters || []);
+  filters.forEach(filterName => clauses.push(`filter(${filterName})`));
 
   return clauses.join(' and ');
 }
