@@ -7,4 +7,7 @@
 * **DONE** Spectre view should use list of project's funds, not the complete list
 * **DONE** ui-cyclops should be modified to accept {id, name} pairs from mod-cyclops
 * **DONE (as far as possible)** Add editable fields for the rest of Project
+* **DONE** Add ability to save searches as filters
+* **DONE** Allow saved filters to be applied
+* **DONE** Correctly reflect "query" resource in URL
 * Add settings page for managing funds
