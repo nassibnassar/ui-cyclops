@@ -64,6 +64,7 @@
   "spectres.add": "Add spectres",
   "spectres.adding-from": "Adding to list <code>{name}</code> from {count} {count, plural, one {spectre} other {spectres}} in list <code>{addFrom}</code>",
   "button.add": "Add",
+  "filters.label": "Filters",
   "save-search.button": "Save search",
   "save-search.heading": "Name this saved search",
   "save-search.message": "Choose a name for this search (must be a valid identifier: a letter or underscore, followed by letters, digits or underscores)",

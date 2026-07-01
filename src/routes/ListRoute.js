@@ -20,6 +20,9 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   const spectresResource = resources.spectres;
   const loaded = spectresResource && spectresResource.hasLoaded;
 
+  // eslint-disable-next-line no-use-before-define
+  const saveSearch = (name) => mutator.saveFilter.POST({ name, cond: condFn(null, null, resources) });
+
   return (
     <ListView
       loaded={loaded}
@@ -28,9 +31,10 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       spectreCount={resources.spectreCount.records[0]?.data[0].values[0]}
       query={resources.query}
       updateQuery={mutator.query.update}
+      savedFilters={resources.filters?.records?.[0]?.filters || []}
       addFrom={addFrom}
       addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, cond: `id = ${spectreId}` })}
-      saveSearch={(name) => mutator.saveFilter.POST({ name, cond: condFn(null, null, resources) })}
+      saveSearch={saveSearch}
       pageAmount={RESULT_COUNT_INCREMENT}
       onNeedMoreData={handleNeedMoreData}
       pagingOffset={resources.resultOffset}
@@ -61,11 +65,20 @@ function condFn(_a, _b, resources) {
     clauses.push(`availability = '${availability}'`);
   }
 
+  const filters = resources.query.filters;
+  if (filters && filters.length) {
+    filters.forEach(filterName => clauses.push(`filter(${filterName})`));
+  }
+
   return clauses.join(' and ');
 }
 
 ListRoute.manifest = Object.freeze({
   query: {},
+  filters: {
+    type: 'okapi',
+    path: 'cyclops/filters',
+  },
   resultCount: { initialValue: INITIAL_RESULT_COUNT },
   resultOffset: { initialValue: 0 },
   spectres: {

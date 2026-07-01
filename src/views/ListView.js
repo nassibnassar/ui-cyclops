@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MCLPagingTypes } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, MCLPagingTypes } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
 import packageInfo from '../../package';
@@ -47,11 +47,14 @@ const dataOptions = [
   ...availabilityValues.map(x => ({ value: x, label: <FormattedMessage id={`ui-cyclops.availability.${x}`} /> })),
 ];
 
-function renderSearch(query, updateQuery) {
+function renderSearch(query, updateQuery, savedFilters) {
   const onSubmitSearch = (e) => {
     e.preventDefault();
     updateQuery({ query: e.currentTarget.elements.query?.value });
   };
+
+  const filterOptions = savedFilters.map(name => ({ value: name, label: name }));
+  const selectedFilters = (query.filters || []).map(name => ({ value: name, label: name }));
 
   return (
     <form onSubmit={onSubmitSearch}>
@@ -82,6 +85,14 @@ function renderSearch(query, updateQuery) {
           dataOptions={dataOptions}
           value={query.availability}
           onChange={(e) => updateQuery({ availability: e.currentTarget.value })}
+        />
+      </div>
+      <div>
+        <MultiSelection
+          label={<FormattedMessage id="ui-cyclops.filters.label" />}
+          dataOptions={filterOptions}
+          value={selectedFilters}
+          onChange={(selected) => updateQuery({ filters: selected.map(o => o.value) })}
         />
       </div>
     </form>
@@ -174,7 +185,7 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
 }
 
 
-export default function ListView({ loaded, name, spectres, spectreCount, query, updateQuery, addFrom, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, spectres, spectreCount, query, updateQuery, savedFilters = [], addFrom, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const intl = useIntl();
@@ -225,7 +236,7 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
           paneTitle="Search & filter"
           lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
         >
-          {renderSearch(query, updateQuery)}
+          {renderSearch(query, updateQuery, savedFilters)}
           <br />
           <br />
           <Button
