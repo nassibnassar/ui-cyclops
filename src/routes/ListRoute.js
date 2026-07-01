@@ -30,6 +30,7 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
       updateQuery={mutator.query.update}
       addFrom={addFrom}
       addSpectre={(spectreId) => mutator.addToList.POST({ from: addFrom, cond: `id = ${spectreId}` })}
+      saveSearch={(name) => mutator.saveFilter.POST({ name, cond: condFn(null, null, resources) })}
       pageAmount={RESULT_COUNT_INCREMENT}
       onNeedMoreData={handleNeedMoreData}
       pagingOffset={resources.resultOffset}
@@ -40,7 +41,8 @@ function ListRoute({ stripes, resources, mutator, children, location, match }) {
   );
 }
 
-// Used as a query-parameter function in two manifest entries
+// Used as a query-parameter function in two manifest entries, and to build
+// the condition when saving a search as a filter.
 function condFn(_a, _b, resources) {
   const clauses = [];
 
@@ -106,6 +108,12 @@ ListRoute.manifest = Object.freeze({
   addToList: {
     type: 'okapi',
     path: 'cyclops/sets/:{setId}/add',
+    fetch: false,
+    throwErrors: false,
+  },
+  saveFilter: {
+    type: 'okapi',
+    path: 'cyclops/filters',
     fetch: false,
     throwErrors: false,
   }

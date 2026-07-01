@@ -4,7 +4,11 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MCLPagingTypes } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
+import { PromptModal } from '../components/PromptModal';
 import packageInfo from '../../package';
+
+// A valid identifier: a letter or underscore followed by letters, digits or underscores
+const IDENTIFIER_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 
 const fields = {
@@ -170,10 +174,43 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
 }
 
 
-export default function ListView({ loaded, name, spectres, spectreCount, query, updateQuery, addFrom, addSpectre, children, pageAmount, onNeedMoreData, pagingOffset }) {
+export default function ListView({ loaded, name, spectres, spectreCount, query, updateQuery, addFrom, addSpectre, saveSearch, children, pageAmount, onNeedMoreData, pagingOffset }) {
   const [showSearchPane, setShowSearchPane] = useState(true);
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const intl = useIntl();
   const callout = useCallout();
+
+  const onSaveSearch = async (searchName) => {
+    if (!IDENTIFIER_RE.test(searchName)) {
+      callout.sendCallout({
+        type: 'error',
+        message: <FormattedMessage id="ui-cyclops.save-search.invalid" values={{ name: searchName }} />,
+      });
+      return;
+    }
+
+    setShowSaveModal(false);
+    try {
+      await saveSearch(searchName);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.save-search.success" values={{ name: searchName }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.save-search.failure"
+          values={{
+            name: searchName,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+    }
+  };
 
   const nav = useNav();
   nav.update({ list: { name, location: useLocation() } });
@@ -189,6 +226,14 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
           lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
         >
           {renderSearch(query, updateQuery)}
+          <br />
+          <br />
+          <Button
+            marginBottom0
+            onClick={() => setShowSaveModal(true)}
+          >
+            <FormattedMessage id="ui-cyclops.save-search.button" />
+          </Button>
         </Pane>
       }
       <Pane
@@ -218,6 +263,14 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
         }
       </Pane>
       {children}
+
+      <PromptModal
+        heading={<FormattedMessage id="ui-cyclops.save-search.heading" />}
+        open={showSaveModal}
+        onConfirm={onSaveSearch}
+        onCancel={() => setShowSaveModal(false)}
+        message={<FormattedMessage id="ui-cyclops.save-search.message" />}
+      />
     </Paneset>
   );
 }

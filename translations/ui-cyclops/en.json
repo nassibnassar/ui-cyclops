@@ -64,5 +64,11 @@
   "spectres.add": "Add spectres",
   "spectres.adding-from": "Adding to list <code>{name}</code> from {count} {count, plural, one {spectre} other {spectres}} in list <code>{addFrom}</code>",
   "button.add": "Add",
+  "save-search.button": "Save search",
+  "save-search.heading": "Name this saved search",
+  "save-search.message": "Choose a name for this search (must be a valid identifier: a letter or underscore, followed by letters, digits or underscores)",
+  "save-search.invalid": "<code>{name}</code> is not a valid identifier: use a letter or underscore, followed by letters, digits or underscores",
+  "save-search.success": "Saved search <code>{name}</code>",
+  "save-search.failure": "Could not save search <code>{name}</code>: status {status} ({statusText}): {body}",
   "SENTINEL": ""
 }
