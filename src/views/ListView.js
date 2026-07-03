@@ -251,8 +251,8 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
         defaultWidth="fill"
         paneTitle={
           addFrom ?
-            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name, addFrom }} /> :
-            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name }} />
+            <FormattedMessage id="ui-cyclops.spectres.adding-from" values={{ count, name: name.replace(/.*\./, ''), addFrom }} /> :
+            <FormattedMessage id="ui-cyclops.spectres.count" values={{ count, name: name.replace(/.*\./, '') }} />
         }
         firstMenu={
           showSearchPane ? undefined : (

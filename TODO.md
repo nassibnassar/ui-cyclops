@@ -11,4 +11,5 @@
 * **DONE** Allow saved filters to be applied
 * **DONE** Correctly reflect "query" resource in URL
 * **DONE** Add ability to populate new lists from a specified filter
+* **DONE** Hide scoping of sets to projects
 * Add settings page for managing funds

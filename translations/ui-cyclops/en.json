@@ -1,8 +1,8 @@
 {
   "meta.title": "Cyclops",
   "tab.home": "Home",
-  "tab.project": "Project {name}",
-  "tab.list": "List {name}",
+  "tab.project": "{name, select, undefined {Project} other {Project: {name}}}",
+  "tab.list": "{name, select, undefined {List} other {List: {name}}}",
   "devInfo": "Developer information",
   "no-value": "No value selected",
   "fillIn": "Please fill in this value",

@@ -8,13 +8,13 @@ import { useNav } from './NavContext';
 
 const segmentsConfig = [{
   name: 'home',
-  idField: undefined
+  renderName: undefined
 }, {
   name: 'project',
-  idField: 'altName'
+  renderName: r => r.title,
 }, {
   name: 'list',
-  idField: 'name'
+  renderName: r => r.name.replace(/.*\./, ''),
 }];
 
 
@@ -27,14 +27,14 @@ function Tabs() {
     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5em' }}>
       <ButtonGroup>
         {
-          segmentsConfig.map(({ name, idField }) => {
+          segmentsConfig.map(({ name, renderName }) => {
             const segmentNav = nav[name];
             const fullBase = '/' + base + '/';
             const effectiveTab = location.pathname.replace(fullBase, '').replace(/\/.*/, '');
             const sl = segmentNav.location;
             const to = sl ? `${sl.pathname}${sl.search}` : `${packageInfo.stripes.route}/${name}`;
             const selected = (effectiveTab === name);
-            const disabled = idField && !segmentNav[idField];
+            const disabled = renderName && !renderName(segmentNav);
             return (
               <Button
                 key={`${name}`}
@@ -44,7 +44,7 @@ function Tabs() {
               >
                 <FormattedMessage
                   id={`ui-cyclops.tab.${name}`}
-                  values={{ name: segmentNav[idField] }}
+                  values={{ name: renderName && renderName(segmentNav) }}
                 />
               </Button>
             );

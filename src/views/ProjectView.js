@@ -216,7 +216,11 @@ function renderList(sets, nav, callout,
         columnWidths={{ 'name': '85%x' }}
         contentData={contentData}
         formatter={{
-          name: r => <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${r.name}`}>{r.name}</Link>,
+          name: r => (
+            <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${r.name}`}>
+              {r.name.replace(/.*\./, '')}
+            </Link>
+          ),
           'action-delete': r => (
             r.name === nav.project.altName + '.object' ? null :
             <Button marginBottom0 onClick={() => setListToDelete(r.name)}>
@@ -231,7 +235,7 @@ function renderList(sets, nav, callout,
       <PromptModal
         heading={<FormattedMessage id="ui-cyclops.project.new-list.heading" />}
         open={showCreateModal}
-        onConfirm={(name, filter) => makeNewSet(name, filter)}
+        onConfirm={(name, filter) => makeNewSet(`${nav.project.altName}.${name}`, filter)}
         onCancel={() => setShowCreateModal(false)}
         message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
         filters={filters}
