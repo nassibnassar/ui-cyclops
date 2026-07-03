@@ -218,7 +218,7 @@ function renderList(sets, nav, callout,
         formatter={{
           name: r => (
             <Link to={`${packageInfo.stripes.route}/list/${nav.project.altName}/${r.name}`}>
-              {r.name.replace(/.*\./, '')}
+              {r.name?.replace(/.*\./, '')}
             </Link>
           ),
           'action-delete': r => (
