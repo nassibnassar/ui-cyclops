@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Modal, ModalFooter } from '@folio/stripes/components';
+import { Button, Modal, ModalFooter, Select } from '@folio/stripes/components';
 
 const PromptModal = ({
   heading,
@@ -8,13 +8,16 @@ const PromptModal = ({
   onCancel,
   open,
   message,
+  filters,
 }) => {
   const inputRef = useRef(null);
+  // Empty string (not undefined) keeps the Select a controlled component
+  const [filter, setFilter] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const value = inputRef.current.value;
-    if (value) onConfirm(value);
+    if (value) onConfirm(value, filter || undefined);
   };
 
   const footer = (
@@ -43,6 +46,17 @@ const PromptModal = ({
       <div>
         <form onSubmit={handleSubmit}>
           <input style={{ width: '100%', boxSizing: 'border-box' }} name="value" ref={inputRef} type="text" />
+          {filters && (
+            <Select
+              label={<FormattedMessage id="ui-cyclops.prompt.filter.label" />}
+              value={filter}
+              onChange={e => setFilter(e.target.value)}
+              dataOptions={[
+                { value: '', label: '' },
+                ...filters.map(f => ({ value: f, label: f })),
+              ]}
+            />
+          )}
         </form>
       </div>
     </Modal>

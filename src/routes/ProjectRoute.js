@@ -8,11 +8,21 @@ function ProjectRoute(props) {
   const loaded = (setsResource && setsResource.hasLoaded &&
                   projectResource && projectResource.hasLoaded);
 
+  const populateList = async (setName, filterName) => {
+    await props.mutator.populateTarget.update({ setName });
+    return props.mutator.populateSet.POST({
+      from: `${projectResource.records[0].altName}.object`,
+      cond: `filter(${filterName})`,
+    });
+  };
+
   return <ProjectView
     loaded={loaded}
     project={projectResource.records[0]}
     sets={setsResource.records[0]}
+    filters={props.resources.filters?.records?.[0]?.filters || []}
     addList={(name) => props.mutator.allSets.POST({ name })}
+    populateList={populateList}
     deleteList={(id) => props.mutator.allSets.DELETE({ id })}
   />;
 }
@@ -25,6 +35,17 @@ ProjectRoute.manifest = Object.freeze({
   sets: {
     type: 'okapi',
     path: 'cyclops/projects/:{projectId}/sets',
+  },
+  filters: {
+    type: 'okapi',
+    path: 'cyclops/filters',
+  },
+  populateTarget: {},
+  populateSet: {
+    type: 'okapi',
+    path: (_q, _p, resources) => `cyclops/sets/${resources.populateTarget?.setName}/add`,
+    fetch: false,
+    throwErrors: false,
   },
   allSets: {
     type: 'okapi',

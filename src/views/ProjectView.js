@@ -111,10 +111,11 @@ function renderProject(baseProject) {
 
 function renderList(sets, nav, callout,
   showCreateModal, setShowCreateModal, addList,
-  listToDelete, setListToDelete, deleteList) {
+  listToDelete, setListToDelete, deleteList,
+  filters, populateList) {
   const contentData = sets.sets.map(name => ({ name }));
 
-  async function makeNewSet(name) {
+  async function makeNewSet(name, filter) {
     setShowCreateModal(false);
 
     try {
@@ -130,6 +131,31 @@ function renderList(sets, nav, callout,
           id="ui-cyclops.project.new-list.failure"
           values={{
             name,
+            status: res.status,
+            statusText: res.statusText,
+            body: await res.text(),
+          }}
+        />
+      });
+      return;
+    }
+
+    if (!filter) return;
+
+    try {
+      await populateList(name, filter);
+      callout.sendCallout({
+        message: <FormattedMessage id="ui-cyclops.project.populate-list.success" values={{ name, filter }} />,
+      });
+    } catch (res) {
+      callout.sendCallout({
+        type: 'error',
+        timeout: 0,
+        message: <FormattedMessage
+          id="ui-cyclops.project.populate-list.failure"
+          values={{
+            name,
+            filter,
             status: res.status,
             statusText: res.statusText,
             body: await res.text(),
@@ -205,9 +231,10 @@ function renderList(sets, nav, callout,
       <PromptModal
         heading={<FormattedMessage id="ui-cyclops.project.new-list.heading" />}
         open={showCreateModal}
-        onConfirm={(name) => makeNewSet(name)}
+        onConfirm={(name, filter) => makeNewSet(name, filter)}
         onCancel={() => setShowCreateModal(false)}
         message={<FormattedMessage id="ui-cyclops.project.new-list.message" />}
+        filters={filters}
       />
 
       <ConfirmationModal
@@ -222,7 +249,7 @@ function renderList(sets, nav, callout,
 }
 
 
-export default function ProjectView({ loaded, project, sets, addList, deleteList }) {
+export default function ProjectView({ loaded, project, sets, filters, addList, populateList, deleteList }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [listToDelete, setListToDelete] = useState();
   const callout = useCallout();
@@ -261,7 +288,8 @@ export default function ProjectView({ loaded, project, sets, addList, deleteList
               {renderProject(project)}
               {renderList(sets, nav, callout,
                 showCreateModal, setShowCreateModal, addList,
-                listToDelete, setListToDelete, deleteList)}
+                listToDelete, setListToDelete, deleteList,
+                filters, populateList)}
             </>
           )
         }

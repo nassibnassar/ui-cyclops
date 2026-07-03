@@ -10,4 +10,5 @@
 * **DONE** Add ability to save searches as filters
 * **DONE** Allow saved filters to be applied
 * **DONE** Correctly reflect "query" resource in URL
+* **DONE** Add ability to populate new lists from a specified filter
 * Add settings page for managing funds
