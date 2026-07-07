@@ -5,8 +5,8 @@ import arrayMutators from 'final-form-arrays';
 import { TitleManager } from '@folio/stripes/core';
 import { Pane, Paneset, Icon, Row, Col, KeyValue, Select, Button, PaneFooter } from '@folio/stripes/components';
 import stripesFinalForm from '@folio/stripes/final-form';
-import { RCKV, CKV } from '../components/CKV';
-import { CF, CLF } from '../components/CF';
+import { CKV } from '../components/CKV';
+import { CF, RCF, CLF } from '../components/CF';
 
 
 function renderPaneFooter(handleSubmit, onCancel, pristine, submitting) {
@@ -98,7 +98,7 @@ function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pr
                   <CF tag="altName" xs={3} />
                   <CF tag="action.id" i18nTag="action" xs={3} component={Select} dataOptions={actionOptions} />
                 </Row>
-                <RCKV rec={project} tag="mou_link" formatFn={x => <a target="_blank" rel="noreferrer" href={x}>{x}</a>} />
+                <RCF tag="mou_link" />
                 <Row>
                   <CLF
                     tag="funds"
