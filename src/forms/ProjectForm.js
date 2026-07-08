@@ -67,7 +67,7 @@ const LOCATION_OPTIONS = [
 
 function ProjectForm({ loaded, project, initialValues, handleSubmit, onClose, pristine, submitting, funds = [] }) {
   const title = initialValues?.name;
-  const fundOptions = funds.map(f => ({ value: f.name, label: f.title }));
+  const fundOptions = funds.map(f => ({ value: f.id, label: f.title }));
   const actionOptions = [
     // Leading empty option so the dropdown reads as empty until a value is
     // chosen, rather than defaulting to displaying the first action name.

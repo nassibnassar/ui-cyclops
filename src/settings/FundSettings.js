@@ -33,13 +33,13 @@ function FundSettings() {
         termWillBeDeleted: 'ui-cyclops.cv.termWillBeDeleted',
       }}
       objectLabel={intl.formatMessage({ id: 'ui-cyclops.settings.funds.objectLabel' })}
-      visibleFields={['name', 'title']}
+      visibleFields={['id', 'title']}
       columnMapping={{
-        name: intl.formatMessage({ id: 'ui-cyclops.settings.funds.name' }),
+        id: intl.formatMessage({ id: 'ui-cyclops.settings.funds.id' }),
         title: intl.formatMessage({ id: 'ui-cyclops.settings.funds.title' }),
       }}
       id="funds"
-      sortby="name"
+      sortby="title"
       hiddenFields={['lastUpdated', 'numberOfObjects']}
     />
   );

@@ -13,15 +13,8 @@ function EditProjectRoute({ resources, mutator, match }) {
   };
 
   const handleSubmit = async (record) => {
-    // The controlled vocabulary only edits fund IDs; the server does not need
-    // (and we do not retain) the human-readable `name` of each fund.
-    const normalized = {
-      ...record,
-      funds: (record.funds || []).map(({ id }) => ({ id })),
-    };
-
     try {
-      await mutator.project.PUT(normalized);
+      await mutator.project.PUT(record);
       callout.sendCallout({
         message: <FormattedMessage id="ui-cyclops.project.update.success" values={{ name: record.altName }} />,
       });

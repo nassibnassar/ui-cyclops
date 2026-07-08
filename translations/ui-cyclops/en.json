@@ -60,7 +60,7 @@
   "settings.some-feature.message": "These are your settings for some app feature.",
   "settings.funds": "Funds",
   "settings.funds.objectLabel": "Funds",
-  "settings.funds.name": "Name",
+  "settings.funds.id": "ID",
   "settings.funds.title": "Title",
   "cv.cannotDeleteTermHeader": "Cannot delete fund",
   "cv.cannotDeleteTermMessage": "This fund could not be deleted. It may be in use by one or more records, or you may not have permission to delete it.",
