@@ -100,7 +100,7 @@
           "cyclops.projects.collection.get",
           "cyclops.projects.get",
           "cyclops.funds.read",
-	  "cyclops.sets.spectre.update"
+          "cyclops.sets.spectre.update"
         ]
       },
       {
@@ -116,7 +116,10 @@
           "cyclops.projects.post",
           "cyclops.projects.delete",
           "cyclops.projects.put",
-          "cyclops.funds.create"
+          "cyclops.funds.get",
+          "cyclops.funds.create",
+          "cyclops.funds.put",
+          "cyclops.funds.delete"
         ]
       }
     ]
