@@ -3,6 +3,16 @@ import { useIntl } from 'react-intl';
 import { ControlledVocab } from '@folio/stripes/smart-components';
 import { useStripes } from '@folio/stripes/core';
 
+// Turn a fund's title into a stable, backend-valid identifier: lowercase,
+// with every run of non-alphanumeric characters collapsed to a single
+// underscore and leading/trailing underscores trimmed.
+function slug(title) {
+  return (title || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
 function FundSettings() {
   const stripes = useStripes();
   const intl = useIntl();
@@ -40,6 +50,11 @@ function FundSettings() {
       }}
       id="funds"
       sortby="title"
+      readOnlyFields={['id']}
+      // Let the backend own the id: don't inject a client-generated UUID (which
+      // it rejects). Instead derive a valid identifier from the title on create.
+      clientGeneratePk={false}
+      preCreateHook={(item) => ({ ...item, id: slug(item.title) })}
       hiddenFields={['lastUpdated', 'numberOfObjects']}
     />
   );
