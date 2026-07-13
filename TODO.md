@@ -14,3 +14,5 @@
 * **DONE** Hide scoping of sets to projects
 * **DONE** Add settings page for managing funds (alter fund, drop fund, show fund are added)
 * BUG: Home and Project tabs should always be clickable, even after reloading from the List tab
+* Present "object" set with a better name
+* Ability to create a new directly from search results, skipping filter creation
