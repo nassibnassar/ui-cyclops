@@ -16,3 +16,8 @@
 * BUG: Home and Project tabs should always be clickable, even after reloading from the List tab
 * Present "object" set with a better name
 * Ability to create a new directly from search results, skipping filter creation
+* Show if a decision has been made on a spectre
+* Show in result list which spectres have been decided
+* Allow filtering a list on actioned/unactioned spectres
+* Result-list: checkboxes for bulk actions
+* Remove up/down arrows for ordering list
