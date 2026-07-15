@@ -21,3 +21,4 @@
 * Allow filtering a list on actioned/unactioned spectres
 * Result-list: checkboxes for bulk actions
 * Remove up/down arrows for ordering list
+* Support new `holdings_count` attribute.
