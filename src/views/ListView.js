@@ -132,17 +132,10 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
     }
   }
 
-  // XXX should calculate this mapping from spectres.fields
-  const contentData = spectres.data.map(row => ({
-    id: row.values[0],
-    author: row.values[1],
-    title: row.values[2],
-    full_vendor_name: row.values[3],
-    availability: row.values[4],
-    holdings_count: row.values[5],
-    decision: row.values[6],
-    fund: row.values[7],
-  }));
+  const fieldNames = spectres.fields.map(({ name: fieldName }) => fieldName);
+  const contentData = spectres.data.map(row => (
+    Object.fromEntries(fieldNames.map((fieldName, index) => [fieldName, row.values[index]]))
+  ));
 
   const formatter = {
     title: r => (
