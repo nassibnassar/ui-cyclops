@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, MCLPagingTypes, NoValue } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, TextField, MCLPagingTypes, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
 import packageInfo from '../../package';
@@ -50,7 +50,23 @@ const dataOptions = [
   ...availabilityValues.map(x => ({ value: x, label: <FormattedMessage id={`ui-cyclops.availability.${x}`} /> })),
 ];
 
-function renderSearch(query, updateQuery, savedFilters) {
+// Comparison directions offered for the numeric holdings-count filter. The
+// value is a symbolic token that ListRoute maps to an actual operator when
+// building the query condition.
+const holdingsCountOps = [
+  { value: 'gte', label: <FormattedMessage id="ui-cyclops.holdings-count.gte" /> },
+  { value: 'lte', label: <FormattedMessage id="ui-cyclops.holdings-count.lte" /> },
+];
+
+// Tri-state filter on whether a decision has been recorded: '' (either),
+// 'true' (decision made) or 'false' (no decision made).
+const decisionOptions = [
+  { value: '', label: <FormattedMessage id="ui-cyclops.no-value" /> },
+  { value: 'true', label: <FormattedMessage id="ui-cyclops.decision.made" /> },
+  { value: 'false', label: <FormattedMessage id="ui-cyclops.decision.not-made" /> },
+];
+
+function renderSearch(query, updateQuery, savedFilters, intl) {
   const onSubmitSearch = (e) => {
     e.preventDefault();
     updateQuery({ query: e.currentTarget.elements.query?.value });
@@ -64,7 +80,7 @@ function renderSearch(query, updateQuery, savedFilters) {
       <SearchField
         autoFocus
         name="query"
-        ariaLabel="XXX search"
+        ariaLabel={intl.formatMessage({ id: 'ui-cyclops.search.aria-label' })}
         searchableIndexes={searchableIndexes}
         selectedIndex={query.qindex}
         value={query.query}
@@ -88,6 +104,30 @@ function renderSearch(query, updateQuery, savedFilters) {
           dataOptions={dataOptions}
           value={query.availability}
           onChange={(e) => updateQuery({ availability: e.currentTarget.value })}
+        />
+      </div>
+      <div>
+        <Select
+          label={<FormattedMessage id="ui-cyclops.holdings-count.label" />}
+          dataOptions={holdingsCountOps}
+          value={query.holdingsCountOp || 'gte'}
+          onChange={(e) => updateQuery({ holdingsCountOp: e.currentTarget.value })}
+          marginBottom0
+        />
+        <TextField
+          type="number"
+          min="0"
+          ariaLabel={intl.formatMessage({ id: 'ui-cyclops.holdings-count.value.aria-label' })}
+          value={query.holdingsCount ?? ''}
+          onChange={(e) => updateQuery({ holdingsCount: e.currentTarget.value })}
+        />
+      </div>
+      <div>
+        <Select
+          label={<FormattedMessage id="ui-cyclops.decision.label" />}
+          dataOptions={decisionOptions}
+          value={query.decision}
+          onChange={(e) => updateQuery({ decision: e.currentTarget.value })}
         />
       </div>
       <div>
@@ -152,7 +192,7 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
           {r.title}
         </>
     ),
-    decision: r => r.decision ? '❎' : <NoValue />,
+    decision: r => (r.decision ? '❎' : <NoValue />),
     fund: r => r.fund?.replace(/.*?:/, ''),
   };
 
@@ -238,7 +278,7 @@ export default function ListView({ loaded, name, spectres, spectreCount, query, 
           paneTitle="Search & filter"
           lastMenu={<IconButton icon="caret-left" onClick={() => setShowSearchPane(false)} />}
         >
-          {renderSearch(query, updateQuery, savedFilters)}
+          {renderSearch(query, updateQuery, savedFilters, intl)}
           <br />
           <br />
           <Button

@@ -13,12 +13,12 @@
 * **DONE** Add ability to populate new lists from a specified filter
 * **DONE** Hide scoping of sets to projects
 * **DONE** Add settings page for managing funds (alter fund, drop fund, show fund are added)
+* **DONE** Support new `holdings_count` attribute (in list view, and as a filter)
+* **DONE** Show if a decision has been made on a spectre
+* **DONE** Show in result list which spectres have been decided
 * BUG: Home and Project tabs should always be clickable, even after reloading from the List tab
 * Present "object" set with a better name
-* Ability to create a new directly from search results, skipping filter creation
-* Show if a decision has been made on a spectre
-* Show in result list which spectres have been decided
+* Ability to create a new set directly from search results, skipping filter creation
 * Allow filtering a list on actioned/unactioned spectres
 * Result-list: checkboxes for bulk actions
 * Remove up/down arrows for ordering list
-* Support new `holdings_count` attribute.

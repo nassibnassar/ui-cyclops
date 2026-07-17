@@ -65,6 +65,21 @@ function condFn(_a, _b, resources) {
     clauses.push(`availability = '${availability}'`);
   }
 
+  // Numeric holdings-count filter: only apply when a value has been entered,
+  // and only honour the two supported comparison operators.
+  const holdingsCount = resources.query.holdingsCount;
+  if (holdingsCount !== undefined && holdingsCount !== '' && !Number.isNaN(Number(holdingsCount))) {
+    const op = resources.query.holdingsCountOp === 'lte' ? '<=' : '>=';
+    clauses.push(`holdings_count ${op} ${Number(holdingsCount)}`);
+  }
+
+  // Tri-state decision filter: only constrain when explicitly set to one of
+  // the two boolean values (an empty value means "either").
+  const decision = resources.query.decision;
+  if (decision === 'true' || decision === 'false') {
+    clauses.push(`decision = ${decision}`);
+  }
+
   // query-string yields a bare string for a single value and an array for
   // several, so normalise to an array before iterating.
   const filters = [].concat(resources.query.filters || []);
