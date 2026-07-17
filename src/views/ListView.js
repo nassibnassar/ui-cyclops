@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useCallout } from '@folio/stripes/core';
-import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, MCLPagingTypes } from '@folio/stripes/components';
+import { Pane, Paneset, Icon, IconButton, MultiColumnList, Accordion, SearchField, Button, Select, MultiSelection, MCLPagingTypes, NoValue } from '@folio/stripes/components';
 import { useNav } from '../NavContext';
 import { PromptModal } from '../components/PromptModal';
 import packageInfo from '../../package';
@@ -12,11 +12,14 @@ const IDENTIFIER_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 
 const fields = {
-  id: ['100px'],
+  id: ['80px'],
+  holdings_count: ['110px'],
   author: ['200px'],
   title: ['450px'],
   full_vendor_name: ['200px'],
   availability: ['240px'],
+  decision: ['80px'],
+  fund: ['220px'],
 };
 
 const searchableIndexes = [{ value: '', label: '-' }].concat(Object.entries(fields).map(([key]) => ({
@@ -129,12 +132,16 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
     }
   }
 
+  // XXX should calculate this mapping from spectres.fields
   const contentData = spectres.data.map(row => ({
     id: row.values[0],
     author: row.values[1],
     title: row.values[2],
     full_vendor_name: row.values[3],
     availability: row.values[4],
+    holdings_count: row.values[5],
+    decision: row.values[6],
+    fund: row.values[7],
   }));
 
   const formatter = {
@@ -152,6 +159,8 @@ function renderList(spectres, nav, query, updateQuery, addFrom, name, callout, a
           {r.title}
         </>
     ),
+    decision: r => r.decision ? '❎' : <NoValue />,
+    fund: r => r.fund?.replace(/.*?:/, ''),
   };
 
   return (
